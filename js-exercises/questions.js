@@ -27,7 +27,7 @@
  * @return {number[]} A new array containing only non-negative numbers.
  */
 function filterNegativeNumbers(numbers) {
-  // Your implementation here
+  return numbers.filter(n => n >= 0);
 }
 
 /**
@@ -46,7 +46,7 @@ function filterNegativeNumbers(numbers) {
  * @return {number[]} A new array containing the numbers divisible by three doubled.
  */
 function doubleDivisibleByThree(numbers) {
-  // Your implementation here
+  return numbers.filter(n => n % 3 === 0).map(n => n * 2)
 }
 
 /**
@@ -75,9 +75,10 @@ function doubleDivisibleByThree(numbers) {
  * @return {Object[]} An array of objects containing the name and email of qualifying students, sorted by name.
  */
 function selectHighPerformingStudents(students) {
-  // Your implementation here
+  return students.filter(student => student.GPA >= 5 && student.hobbies.includes('coding'))
+    .map(student => ({ name: student.name, email: student.email }))
+    .sort((a, b) => a.name.localeCompare(b.name));
 }
-
 /**
  * Exercise 4: Aggregating Student Data with `reduce()`
  *
@@ -103,7 +104,27 @@ function selectHighPerformingStudents(students) {
  * @return {Object} An object containing aggregated student data.
  */
 function aggregateStudentData(students) {
-  // Your implementation here
+  const answer = students.reduce(
+    (acc, student) => {
+      acc.totalGPA += student.GPA;
+      acc.studentNum += 1;
+      if (student.hobbies.includes('coding')) {
+        acc.codingGPA += student.GPA;
+        acc.codingStudentNum += 1;
+      }
+      return acc;
+    },
+    { totalGPA: 0, studentNum: 0, codingGPA: 0, codingStudentNum: 0 }
+  );
+
+  return {
+    studentNum: answer.studentNum,
+    studentAvgGPA: answer.studentNum ? +(answer.totalGPA / answer.studentNum).toFixed(2) : 0,
+    codingStudentNum: answer.codingStudentNum,
+    codingStudentGPA: answer.codingStudentNum
+      ? +(answer.codingGPA / answer.codingStudentNum).toFixed(2)
+      : 0
+  };
 }
 
 /**
@@ -126,7 +147,12 @@ function aggregateStudentData(students) {
  * @return {string} The converted string, either in camelCase or sentence form.
  */
 function swapForm(input) {
-  // Your implementation here
+  if (input.includes(" ")) {
+    const words = input.split(" ");
+    return words[0] + words.slice(1).map(word => word[0].toUpperCase() + word.slice(1)).join('');
+  } else {
+    return input.replace(/([A-Z])/g, ' $1').toLowerCase();
+  }
 }
 
 // Export the function for testing with Jest
